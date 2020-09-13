@@ -1,7 +1,18 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../database/db';
 
-class User extends Model {}
+const PROTECTED_ATTRIBUTES = ['password']
+
+class User extends Model {
+    toJSON () {
+        // hide protected fields
+        let attributes = Object.assign({}, this.get())
+        for (let a of PROTECTED_ATTRIBUTES) {
+          delete attributes[a]
+        }
+        return attributes
+      }
+}
 User.init(
     {
         email: {
@@ -20,7 +31,7 @@ User.init(
             allowNull: false,
             validate: {
                 len: [40,255]
-            }
+            },            
         },
         name: {
             type: DataTypes.STRING,
